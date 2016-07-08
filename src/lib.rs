@@ -12,7 +12,6 @@ use petgraph::visit::{Graphlike, NeighborIter, NeighborsDirected, Externals,
 use petgraph::EdgeDirection;
 use bit_set::BitSet;
 
-use std::path::Path;
 use std::io::BufReader;
 use std::fs::File;
 
@@ -26,11 +25,16 @@ struct CapnGraph {
 }
 
 impl CapnGraph {
+    pub fn tag(&self) -> &str {
+        let root: graph::Reader = self.store.get_root().unwrap();
+        root.get_tag().unwrap()
+    }
+
     pub fn node_count(&self) -> usize {
         self.node_cache.len()
     }
 
-    pub fn from_packed_file(p: &Path) -> capnp::Result<Self> {
+    pub fn from_packed_file(p: &str) -> capnp::Result<Self> {
         let f = try!(File::open(p));
         let mut reader = BufReader::new(f);
         let msg = try!(serialize_packed::read_message(&mut reader,
@@ -178,5 +182,16 @@ impl VisitMap<u32> for NodeSet {
 
     fn is_visited(&self, n: &u32) -> bool {
         self.0.contains(*n as usize)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::CapnGraph;
+
+    #[test]
+    fn reads_graph() {
+        let g = CapnGraph::from_packed_file("data/bin/ca-GrQc.bin").unwrap();
+        assert!(g.tag() == "ca-GrQc");
     }
 }
