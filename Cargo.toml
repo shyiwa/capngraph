@@ -3,6 +3,7 @@ name = "capngraph"
 version = "0.1.0"
 authors = ["J David Smith <emallson@atlanis.net>"]
 build = "build.rs"
+license = "BSD-3-Clause"
 
 [dependencies]
 capnp = "0.7"
