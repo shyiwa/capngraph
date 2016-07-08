@@ -1,0 +1,14 @@
+[package]
+name = "capngraph"
+version = "0.1.0"
+authors = ["J David Smith <emallson@atlanis.net>"]
+build = "build.rs"
+
+[dependencies]
+capnp = "0.7"
+petgraph = "*"
+docopt = "*"
+rustc-serialize = "0.3"
+
+[build-dependencies]
+capnpc = "0.7"
