@@ -2,6 +2,7 @@
 
 struct WeightedDirectedGraph {
     tag @0 : Text;
+    numNodes @1 : UInt32;
 
     struct Edge {
         from @0 : UInt32;
@@ -9,7 +10,7 @@ struct WeightedDirectedGraph {
         weight @2 : Float32;
     }
 
-    adjacency @1 : List(Edge);
+    edges @2 : List(Edge);
 }
 
 struct CtvmGraph {

@@ -121,7 +121,7 @@ fn main() {
         }
     }
 
-    let mut f = File::create(&args.arg_dest).unwrap();
+    let f = File::create(&args.arg_dest).unwrap();
     let mut writer = BufWriter::new(f);
-    serialize_packed::write_message(&mut writer, &message);
+    serialize_packed::write_message(&mut writer, &message).unwrap();
 }

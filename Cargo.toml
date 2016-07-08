@@ -7,9 +7,10 @@ license = "BSD-3-Clause"
 
 [dependencies]
 capnp = "0.7"
-petgraph = "*"
+petgraph = "0.2"
 docopt = "*"
 rustc-serialize = "0.3"
+bit-set = "0.4"
 
 [build-dependencies]
 capnpc = "0.7"
