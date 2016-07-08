@@ -12,8 +12,8 @@ struct WeightedDirectedGraph {
     }
 
     struct Node {
-        cost @0 : Float32;
-        benefit @1 : Float32;
+        cost @0 : Float32 = 1;
+        benefit @1 : Float32 = 1;
     }
 
     edges @2 : List(Edge);
