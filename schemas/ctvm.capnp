@@ -1,3 +1,4 @@
+# extension of graph.capnp to a case with additional node data.
 @0xaed9fb729c576ca5;
 
 struct WeightedDirectedGraph {
@@ -10,5 +11,11 @@ struct WeightedDirectedGraph {
         weight @2 : Float32;
     }
 
+    struct Node {
+        cost @0 : Float32;
+        benefit @1 : Float32;
+    }
+
     edges @2 : List(Edge);
+    nodes @3 : List(Node);
 }
