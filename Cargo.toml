@@ -1,13 +1,13 @@
 [package]
 name = "capngraph"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["J David Smith <emallson@atlanis.net>"]
 build = "build.rs"
 license = "BSD-3-Clause"
 
 [dependencies]
 capnp = "0.7"
-petgraph = "0.2"
+petgraph = "0.4.1"
 docopt = "*"
 rustc-serialize = "0.3"
 bit-set = "0.4"
