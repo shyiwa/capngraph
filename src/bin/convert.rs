@@ -18,8 +18,7 @@ Convert the input edge-list to a packed binary file readable by Cap'n
 Proto.
 
 The input edge-list should have the number of nodes and edges on the
-first line, followed by #nodes lines of <id> <cost> <benefit> triplets
-and #edges lines of <from> <to> <weight> triplets.
+first line, followed by #edges lines of <from> <to> <weight> triplets.
 
 Usage:
   convert <source> <dest> [--tag=<tag>]
