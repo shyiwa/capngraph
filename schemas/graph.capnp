@@ -8,6 +8,12 @@ struct GraphHeader {
 
 struct Edge {
        from @0 : UInt32;
-       to @1 : UInt32;
-       weight @2 : Float32;
+       to :union {
+          node @1 :UInt32;
+          list @3 :List(UInt32);
+       }
+       weight :union {
+          value @2 :Float32;
+          list @4 :List(Float32);
+       }
 }

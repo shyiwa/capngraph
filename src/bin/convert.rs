@@ -20,19 +20,21 @@ The input edge-list should have the number of nodes and edges on the
 first line, followed by #edges lines of <from> <to> <weight> triplets.
 
 Usage:
-  convert <source> <dest> [--tag=<tag>]
+  convert <source> <dest> [--tag=<tag>] [--grouped]
   convert (-h | --help)
 
 Options:
   -h --help          Show this screen.
   --tag=<tag>        The tag (name) of the graph. Defaults to the basename of the source.
+  --grouped          The <source> is grouped by source node. Enable only if true, produces a smaller output.
 ";
 
 #[derive(RustcDecodable)]
 struct Args {
     arg_source: String,
     arg_dest: String,
-    flag_tag: Option<String>
+    flag_tag: Option<String>,
+    flag_grouped: bool
 }
 
 struct EdgeIter<R: Read> {
@@ -93,6 +95,40 @@ impl<R: Read> Iterator for EdgeIter<R> {
     }
 }
 
+type HeapBuilder = ::capnp::message::Builder<::capnp::message::HeapAllocator>;
+fn build_edgelist(from: u32, edges: &Vec<(u32, f32)>) -> HeapBuilder {
+    let mut message = ::capnp::message::Builder::new_default();
+    {
+        let mut em = message.init_root::<edge::Builder>();
+        em.set_from(from);
+        {
+            let mut to = em.borrow().get_to().init_list(edges.len() as u32);
+            for (i, &(t, _)) in edges.iter().enumerate() {
+                to.set(i as u32, t);
+            }
+        }
+        {
+            let mut weight = em.borrow().get_weight().init_list(edges.len() as u32);
+            for (i, &(_, w)) in edges.iter().enumerate() {
+                weight.set(i as u32, w);
+            }
+        }
+    }
+
+    message
+}
+
+fn build_edge(from: u32, to: u32, weight: f32) -> HeapBuilder {
+    let mut message = ::capnp::message::Builder::new_default();
+    {
+        let mut edge = message.init_root::<edge::Builder>();
+        edge.set_from(from);
+        edge.borrow().get_to().set_node(to);
+        edge.borrow().get_weight().set_value(weight);
+    }
+    message
+}
+
 fn main() {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.decode())
@@ -117,14 +153,45 @@ fn main() {
     }
     serialize_packed::write_message(&mut writer, &message).unwrap();
 
-    for (from, to, weight) in iter {
-        let mut message = ::capnp::message::Builder::new_default();
-        {
-            let mut edge = message.init_root::<edge::Builder>();
-            edge.set_from(from);
-            edge.set_to(to);
-            edge.set_weight(weight);
+    let mut num_read_edges = 0;
+
+    if args.flag_grouped {
+        let mut prev_from = None;
+        let mut edges = vec![];
+        for (from, to, weight) in iter {
+            num_read_edges += 1;
+            if let Some(prev) = prev_from {
+                // we have an existing edgelist
+                if prev == from {
+                    edges.push((to, weight)); // matching source, add edge to list
+                } else {
+                    // new source, write out previous edge list
+                    let message = build_edgelist(prev, &edges);
+                    serialize_packed::write_message (&mut writer, &message).unwrap();
+                    // clear previous edgelist
+                    edges.clear();
+                    // add current edge
+                    edges.push((to, weight));
+                }
+            } else if let None = prev_from {
+                // no existing edgelist, add current edge
+                edges.push((to, weight));
+            }
+            prev_from = Some(from);
         }
-        serialize_packed::write_message (&mut writer, &message).unwrap();
+        // write out the last edgelist
+        if let Some(prev) = prev_from {
+            let message = build_edgelist(prev, &edges);
+            serialize_packed::write_message (&mut writer, &message).unwrap();
+        }
+    } else {
+        for (from, to, weight) in iter {
+            num_read_edges += 1;
+            let message = build_edge(from, to, weight);
+            serialize_packed::write_message (&mut writer, &message).unwrap();
+        }
+    }
+    if num_edges != num_read_edges {
+        panic!("Expected {} edges, read {} edges", num_edges, num_read_edges);
     }
 }
