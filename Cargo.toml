@@ -1,6 +1,6 @@
 [package]
 name = "capngraph"
-version = "0.3.1"
+version = "0.3.0"
 authors = ["J David Smith <emallson@atlanis.net>"]
 build = "build.rs"
 license = "BSD-3-Clause"
