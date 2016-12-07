@@ -37,6 +37,7 @@ pub fn load_graph(p: &str) -> capnp::Result<Graph<(), f32>> {
             _ => panic!("Unable to read edge")
         };
 
+        edgelist.sort_by(|&(_, a, _), &(_, b, _)| b.cmp(&a));
         edges.append(&mut edgelist);
     }
 
