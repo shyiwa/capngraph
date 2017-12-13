@@ -9,6 +9,12 @@ particular implementation I need done.
 *To-Do*: Extend converter to allow conversion to the more-general
 graph format.
 
+## Installation
+
+Unlike most rust libraries, this one has external dependencies. To compile any project using it, you need Cap'n Proto installed. On a Debian-like system, this can be done with
+
+    sudo apt-get install libcapnp-dev capnproto
+
 ## Motivation
 
 Do you know how many undocumented graph formats there are in the wild?
