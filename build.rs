@@ -1,5 +1,9 @@
 extern crate capnpc;
 
 fn main() {
-    ::capnpc::compile("schemas", &["schemas/graph.capnp"]).unwrap();
+    capnpc::CompilerCommand::new()
+        .src_prefix("schemas")
+        .file("schemas/graph.capnp")
+        .run()
+        .expect("schema compiler command");
 }

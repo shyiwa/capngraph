@@ -6,8 +6,18 @@ schema for graphs, along with tools for working with this format.
 *Status*: Schema written, converter from edge-list format for the
 particular implementation I need done.
 
-*To-Do*: Extend converter to allow conversion to the more-general
-graph format.
+**Installing the Binaries:**
+```bash
+cargo install --git https://github.com/emallson/capngraph.git --features bins
+```
+
+Statically-linked release binaries are also available on Github.
+
+**Linking to the Library:**
+```toml
+[dependencies]
+capngraph = { version = "0.3.1", git = "https://github.com/emallson/capngraph.git" }
+```
 
 ## Motivation
 
@@ -40,7 +50,7 @@ for the text format.
 
 ## License
 
-Copyright (c) 2016, J. David Smith
+Copyright (c) 2016-2018, J. David Smith
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
