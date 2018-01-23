@@ -11,11 +11,11 @@ use docopt::Docopt;
 use petgraph::visit::EdgeRef;
 
 const USAGE: &'static str = "
-Convert the input packed binary graph to the academy-standard edge-list format.
+Convert the input packed binary graph to the edge-list format.
 
 Usage:
   deconvert <bin> <dest>
-  convert (-h | --help)
+  deconvert (-h | --help)
 
 Options:
   -h --help        Show this screen.
@@ -24,7 +24,7 @@ Options:
 #[derive(RustcDecodable)]
 struct Args {
     arg_bin: String,
-    arg_dest: String
+    arg_dest: String,
 }
 
 fn main() {
@@ -40,7 +40,8 @@ fn main() {
     writeln!(writer, "{} {}", graph.node_count(), graph.edge_count()).unwrap();
 
     for edge in graph.edge_references() {
-        writeln!(writer, "{} {} {}",
+        writeln!(writer,
+                 "{} {} {}",
                  edge.source().index(),
                  edge.target().index(),
                  f32::from(*edge.weight()))
